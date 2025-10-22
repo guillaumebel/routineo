@@ -10,6 +10,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, ScrollView, Text, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import MaterialButton from "../components/common/MaterialButton";
@@ -36,6 +37,7 @@ export default function HabitDetailScreen({
   const { habitId } = route.params;
   const [habit, setHabit] = useState<Habit | null>(null);
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadHabit();
@@ -63,7 +65,7 @@ export default function HabitDetailScreen({
 
   const handleCheckIn = async (): Promise<void> => {
     if (checkIfCompletedToday()) {
-      Alert.alert("Already completed", "You have already checked in today!");
+      Alert.alert(t("messages.habitCompleted"), t("messages.alreadyCheckedIn"));
       return;
     }
 
@@ -72,32 +74,28 @@ export default function HabitDetailScreen({
         completions: arrayUnion(Timestamp.now()),
       });
       loadHabit();
-      Alert.alert("Success", "Great job! Keep it up! 🎉");
+      Alert.alert(t("common.successTitle"), t("messages.checkInSuccess"));
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      Alert.alert(t("common.error"), error.message);
     }
   };
 
   const handleDeleteHabit = (): void => {
-    Alert.alert(
-      "Delete Habit",
-      "Are you sure you want to delete this habit? This action cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await deleteDoc(doc(db, "habits", habitId));
-              navigation.goBack();
-            } catch (error: any) {
-              Alert.alert("Error", error.message);
-            }
-          },
+    Alert.alert(t("habits.deleteHabit"), t("messages.confirmDelete"), [
+      { text: t("common.cancel"), style: "cancel" },
+      {
+        text: t("common.delete"),
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await deleteDoc(doc(db, "habits", habitId));
+            navigation.goBack();
+          } catch (error: any) {
+            Alert.alert(t("common.error"), error.message);
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const styles = createHabitDetailStyles(theme);
@@ -130,7 +128,9 @@ export default function HabitDetailScreen({
           <MaterialButton
             variant={isCompletedToday ? "filled" : "elevated"}
             title={
-              isCompletedToday ? "✓ Completed Today" : "Check In for Today"
+              isCompletedToday
+                ? `✓ ${t("messages.completedToday")}`
+                : t("messages.checkInForToday")
             }
             onPress={handleCheckIn}
             disabled={isCompletedToday}
@@ -139,7 +139,7 @@ export default function HabitDetailScreen({
           />
 
           <MaterialCard variant="elevated" style={styles.statsCard}>
-            <Text style={styles.statsTitle}>Statistics</Text>
+            <Text style={styles.statsTitle}>{t("habits.statistics")}</Text>
 
             <View style={styles.statRow}>
               <Text style={styles.statLabel}>Total Completions:</Text>
@@ -151,7 +151,7 @@ export default function HabitDetailScreen({
             <View style={styles.statRow}>
               <Text style={styles.statLabel}>Current Streak:</Text>
               <Text style={styles.statValue}>
-                {calculateStreak(habit.completions)} days
+                {calculateStreak(habit.completions)} {t("messages.days")}
               </Text>
             </View>
 
@@ -189,7 +189,7 @@ export default function HabitDetailScreen({
 
           <MaterialButton
             variant="outlined"
-            title="Delete Habit"
+            title={t("habits.deleteHabit")}
             onPress={handleDeleteHabit}
             style={styles.deleteButton}
             icon="delete"

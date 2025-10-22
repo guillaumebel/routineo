@@ -1,5 +1,6 @@
 ﻿import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   StyleSheet,
   Text,
@@ -18,25 +19,26 @@ interface ThemeSwitcherProps {
 
 const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({ style }) => {
   const { themeMode, theme, setThemeMode } = useTheme();
+  const { t } = useTranslation();
 
   const themeOptions = [
     {
       mode: "light" as const,
-      label: "Light",
+      label: t("profile.lightMode"),
       icon: "light-mode",
-      description: "Always use light theme",
+      description: t("profile.lightThemeDesc"),
     },
     {
       mode: "dark" as const,
-      label: "Dark",
+      label: t("profile.darkMode"),
       icon: "dark-mode",
-      description: "Always use dark theme",
+      description: t("profile.darkThemeDesc"),
     },
     {
       mode: "system" as const,
-      label: "System",
+      label: t("profile.systemMode"),
       icon: "settings-brightness",
-      description: "Follow system setting",
+      description: t("profile.systemThemeDesc"),
     },
   ];
 
@@ -45,7 +47,9 @@ const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({ style }) => {
       variant="elevated"
       style={StyleSheet.flatten([styles.container, style])}
     >
-      <Text style={[styles.title, { color: theme.onSurface }]}>Theme</Text>
+      <Text style={[styles.title, { color: theme.onSurface }]}>
+        {t("profile.theme")}
+      </Text>
 
       {themeOptions.map((option) => (
         <TouchableOpacity

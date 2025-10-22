@@ -3,10 +3,13 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import MaterialStatusBar from "./src/components/common/MaterialStatusBar";
 import { AuthProvider, useAuth } from "./src/contexts/AuthContext";
+import { LanguageProvider } from "./src/contexts/LanguageContext";
 import { ThemeProvider, useTheme } from "./src/contexts/ThemeContext";
 import { Typography } from "./src/design/typography";
+import "./src/i18n"; // Initialize i18n
 import { RootStackParamList, TabParamList } from "./src/types";
 
 import AddHabitScreen from "./src/screens/AddHabitScreen";
@@ -20,6 +23,7 @@ const Tab = createBottomTabNavigator<TabParamList>();
 
 function HomeTabs() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Tab.Navigator
@@ -48,9 +52,9 @@ function HomeTabs() {
         name="HomeTab"
         component={HomeScreen}
         options={{
-          tabBarLabel: "Habits",
+          tabBarLabel: t("home.appTitle"),
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="dashboard" size={size} color={color} />
+            <MaterialIcons name="home" size={size} color={color} />
           ),
         }}
       />
@@ -58,7 +62,7 @@ function HomeTabs() {
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarLabel: "Profile",
+          tabBarLabel: t("profile.profile"),
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="person" size={size} color={color} />
           ),
@@ -71,6 +75,7 @@ function HomeTabs() {
 function AppNavigator() {
   const { currentUser } = useAuth();
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <NavigationContainer>
@@ -92,7 +97,7 @@ function AppNavigator() {
               name="AddHabit"
               component={AddHabitScreen}
               options={{
-                title: "New Habit",
+                title: t("habits.createHabit"),
                 headerStyle: {
                   backgroundColor: theme.surfaceContainer,
                 },
@@ -106,7 +111,7 @@ function AppNavigator() {
               name="HabitDetail"
               component={HabitDetailScreen}
               options={{
-                title: "Habit Details",
+                title: t("habits.habitDetails"),
                 headerStyle: {
                   backgroundColor: theme.surfaceContainer,
                 },
@@ -126,10 +131,12 @@ function AppNavigator() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <MaterialStatusBar style="auto" />
-        <AppNavigator />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <MaterialStatusBar style="auto" />
+          <AppNavigator />
+        </AuthProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

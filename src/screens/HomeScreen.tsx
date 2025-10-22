@@ -7,6 +7,7 @@ import {
   where,
 } from "firebase/firestore";
 import React, { JSX, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, ListRenderItem, Text, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import AnimatedView from "../components/common/AnimatedView";
@@ -30,6 +31,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const [habits, setHabits] = useState<Habit[]>([]);
   const { currentUser } = useAuth();
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!currentUser) return;
@@ -154,7 +156,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             <Text style={styles.streakNumber}>
               {calculateStreak(item.completions)}
             </Text>
-            <Text style={styles.streakLabel}>day streak</Text>
+            <Text style={styles.streakLabel}>{t("home.dayStreak")}</Text>
           </View>
         </View>
 
@@ -165,11 +167,11 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             <Text style={styles.statValue}>
               {item.completions?.length || 0}
             </Text>
-            <Text style={styles.statLabel}>Total</Text>
+            <Text style={styles.statLabel}>{t("common.total")}</Text>
           </View>
           <View style={styles.stat}>
             <Text style={styles.statValue}>{getCompletionRate(item)}%</Text>
-            <Text style={styles.statLabel}>30-day rate</Text>
+            <Text style={styles.statLabel}>{t("home.thirtyDayRate")}</Text>
           </View>
         </View>
       </MaterialCard>
@@ -181,8 +183,8 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   return (
     <View style={styles.container}>
       <View style={styles.appBar}>
-        <Text style={styles.appBarTitle}>Routineo</Text>
-        {/* <Text style={styles.appBarSubtitle}>Track your progress</Text> */}
+        <Text style={styles.appBarTitle}>{t("home.appTitle")}</Text>
+        {/* <Text style={styles.appBarSubtitle}>{t('home.trackYourProgress')}</Text> */}
       </View>
 
       <FlatList
@@ -192,9 +194,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No habits yet!</Text>
+            <Text style={styles.emptyText}>{t("home.noHabitsYet")}</Text>
             <Text style={styles.emptySubtext}>
-              Tap + to create your first habit
+              {t("home.tapToCreateFirst")}
             </Text>
           </View>
         }

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -18,6 +19,7 @@ export default function LoginScreen() {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const { login, signup } = useAuth();
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   const handleSubmit = async (): Promise<void> => {
     try {
@@ -39,13 +41,13 @@ export default function LoginScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.content}>
-        <Text style={styles.title}>Routineo</Text>
+        <Text style={styles.title}>{t("home.appTitle")}</Text>
         <Text style={styles.subtitle}>
-          {isLogin ? "Sign in to continue" : "Create your account"}
+          {isLogin ? t("auth.signInToContinue") : t("auth.createYourAccount")}
         </Text>
 
         <MaterialTextInput
-          label="Email"
+          label={t("auth.email")}
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -54,7 +56,7 @@ export default function LoginScreen() {
         />
 
         <MaterialTextInput
-          label="Password"
+          label={t("auth.password")}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -63,7 +65,7 @@ export default function LoginScreen() {
 
         <MaterialButton
           variant="filled"
-          title={isLogin ? "Login" : "Sign Up"}
+          title={isLogin ? t("auth.login") : t("auth.signUp")}
           onPress={handleSubmit}
           style={styles.button}
         />
@@ -71,9 +73,7 @@ export default function LoginScreen() {
         <MaterialButton
           variant="text"
           title={
-            isLogin
-              ? "Don't have an account? Sign Up"
-              : "Already have an account? Login"
+            isLogin ? t("auth.dontHaveAccount") : t("auth.alreadyHaveAccount")
           }
           onPress={() => setIsLogin(!isLogin)}
           style={styles.switchButton}

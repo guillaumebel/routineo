@@ -1,6 +1,7 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, ScrollView, Text, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import MaterialButton from "../components/common/MaterialButton";
@@ -28,10 +29,11 @@ export default function AddHabitScreen({ navigation }: AddHabitScreenProps) {
   );
   const { currentUser } = useAuth();
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   const handleCreateHabit = async (): Promise<void> => {
     if (!name.trim()) {
-      Alert.alert("Error", "Please enter a habit name");
+      Alert.alert(t("common.error"), t("validation.pleaseEnterHabitName"));
       return;
     }
 
@@ -47,7 +49,7 @@ export default function AddHabitScreen({ navigation }: AddHabitScreenProps) {
 
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      Alert.alert(t("common.error"), error.message);
     }
   };
 
@@ -65,16 +67,16 @@ export default function AddHabitScreen({ navigation }: AddHabitScreenProps) {
         <View style={styles.content}>
           <MaterialCard variant="filled" style={styles.formCard}>
             <MaterialTextInput
-              label="Habit Name"
-              placeholder="e.g., Exercise, Read, Meditate"
+              label={t("habits.habitName")}
+              placeholder={t("habits.habitNamePlaceholder")}
               value={name}
               onChangeText={setName}
               style={styles.input}
             />
 
             <MaterialTextInput
-              label="Description (Optional)"
-              placeholder="What do you want to achieve?"
+              label={t("habits.description")}
+              placeholder={t("habits.descriptionPlaceholder")}
               value={description}
               onChangeText={setDescription}
               multiline
@@ -82,13 +84,13 @@ export default function AddHabitScreen({ navigation }: AddHabitScreenProps) {
               style={styles.textArea}
             />
 
-            <Text style={styles.label}>Frequency</Text>
+            <Text style={styles.label}>{t("habits.frequency")}</Text>
             <View style={styles.frequencyContainer}>
               {frequencyOptions.map((option) => (
                 <MaterialButton
                   key={option}
                   variant={frequency === option ? "filled" : "outlined"}
-                  title={option.charAt(0).toUpperCase() + option.slice(1)}
+                  title={t(`habits.${option}`)}
                   onPress={() => setFrequency(option)}
                   style={styles.frequencyButton}
                 />
@@ -97,14 +99,14 @@ export default function AddHabitScreen({ navigation }: AddHabitScreenProps) {
 
             <MaterialButton
               variant="filled"
-              title="Create Habit"
+              title={t("habits.createHabit")}
               onPress={handleCreateHabit}
               style={styles.button}
             />
 
             <MaterialButton
               variant="text"
-              title="Cancel"
+              title={t("common.cancel")}
               onPress={() => navigation.goBack()}
               style={styles.cancelButton}
             />
