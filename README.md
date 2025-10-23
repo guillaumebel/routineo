@@ -9,6 +9,10 @@ A React Native habit tracking app with TypeScript, Expo, and Firebase.
 - 📊 Visual progress charts & streak tracking
 - 💾 Real-time sync with Firebase
 
+## Screenshots
+
+![alt text](assets/screenshot1.png)   ![alt text](assets/screenshot2.png)
+
 ## Quick Start
 
 1. **Setup Firebase**
