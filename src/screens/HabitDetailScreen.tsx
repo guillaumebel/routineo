@@ -15,6 +15,7 @@ import { Alert, ScrollView, Text, View } from "react-native";
 import { db } from "../../firebaseConfig";
 import MaterialButton from "../components/common/MaterialButton";
 import MaterialCard from "../components/common/MaterialCard";
+import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { createHabitDetailStyles } from "../design/screenStyles";
 import { Habit, RootStackParamList } from "../types";
@@ -38,15 +39,32 @@ export default function HabitDetailScreen({
   const [habit, setHabit] = useState<Habit | null>(null);
   const { theme } = useTheme();
   const { t } = useTranslation();
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     loadHabit();
   }, []);
 
   const loadHabit = async (): Promise<void> => {
-    const habitDoc = await getDoc(doc(db, "habits", habitId));
-    if (habitDoc.exists()) {
-      setHabit({ id: habitDoc.id, ...habitDoc.data() } as Habit);
+    try {
+      const habitDoc = await getDoc(doc(db, "habits", habitId));
+      if (habitDoc.exists()) {
+        const habitData = { id: habitDoc.id, ...habitDoc.data() } as Habit;
+
+        if (habitData.userId !== currentUser?.uid) {
+          Alert.alert(t("common.error"), t("validation.unauthorizedAccess"));
+          navigation.goBack();
+          return;
+        }
+
+        setHabit(habitData);
+      } else {
+        Alert.alert(t("common.error"), t("validation.habitNotFound"));
+        navigation.goBack();
+      }
+    } catch (error: any) {
+      Alert.alert(t("common.error"), error.message);
+      navigation.goBack();
     }
   };
 
@@ -64,6 +82,16 @@ export default function HabitDetailScreen({
   };
 
   const handleCheckIn = async (): Promise<void> => {
+    if (!currentUser?.uid) {
+      Alert.alert(t("common.error"), t("validation.mustBeLoggedIn"));
+      return;
+    }
+
+    if (!habit || habit.userId !== currentUser.uid) {
+      Alert.alert(t("common.error"), t("validation.unauthorizedAccess"));
+      return;
+    }
+
     if (checkIfCompletedToday()) {
       Alert.alert(t("messages.habitCompleted"), t("messages.alreadyCheckedIn"));
       return;
@@ -81,6 +109,16 @@ export default function HabitDetailScreen({
   };
 
   const handleDeleteHabit = (): void => {
+    if (!currentUser?.uid) {
+      Alert.alert(t("common.error"), t("validation.mustBeLoggedIn"));
+      return;
+    }
+
+    if (!habit || habit.userId !== currentUser.uid) {
+      Alert.alert(t("common.error"), t("validation.unauthorizedAccess"));
+      return;
+    }
+
     Alert.alert(t("habits.deleteHabit"), t("messages.confirmDelete"), [
       { text: t("common.cancel"), style: "cancel" },
       {

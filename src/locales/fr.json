@@ -76,7 +76,10 @@
     "pleaseEnterHabitName": "Veuillez saisir un nom d'habitude",
     "invalidEmail": "Veuillez saisir un email valide",
     "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
-    "requiredField": "Ce champ est obligatoire"
+    "requiredField": "Ce champ est obligatoire",
+    "mustBeLoggedIn": "Vous devez être connecté pour effectuer cette action",
+    "habitNotFound": "Habitude introuvable",
+    "unauthorizedAccess": "Vous n'avez pas la permission d'accéder à cette habitude"
   },
   "messages": {
     "habitCreated": "Habitude créée avec succès",

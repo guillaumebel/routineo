@@ -76,7 +76,10 @@
     "pleaseEnterHabitName": "Please enter a habit name",
     "invalidEmail": "Please enter a valid email",
     "passwordTooShort": "Password must be at least 6 characters",
-    "requiredField": "This field is required"
+    "requiredField": "This field is required",
+    "mustBeLoggedIn": "You must be logged in to perform this action",
+    "habitNotFound": "Habit not found",
+    "unauthorizedAccess": "You don't have permission to access this habit"
   },
   "messages": {
     "habitCreated": "Habit created successfully",

@@ -37,12 +37,17 @@ export default function AddHabitScreen({ navigation }: AddHabitScreenProps) {
       return;
     }
 
+    if (!currentUser?.uid) {
+      Alert.alert(t("common.error"), t("validation.mustBeLoggedIn"));
+      return;
+    }
+
     try {
       await addDoc(collection(db, "habits"), {
         name: name.trim(),
         description: description.trim(),
         frequency,
-        userId: currentUser?.uid,
+        userId: currentUser.uid,
         completions: [],
         createdAt: serverTimestamp(),
       });
